@@ -1,0 +1,473 @@
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+
+<style>
+#myDIV {
+    width: 100%;
+    padding: 50px 0;
+    text-align: center;
+    background-color: lightblue;
+    margin-top: 20px;
+    display : none;
+}
+</style>
+
+
+
+<title>Form</title>
+
+<script src="elasticsearch-js/elasticsearch.js"></script>
+
+</head>
+
+<body>
+
+
+
+
+
+<pre id="out" style="display: none">
+
+
+
+</pre>
+
+<script>
+var ajax = function ajax(method, url, callback) {
+    var xhr = !!window.XMLHttpRequest ? new XMLHttpRequest : new ActiveXObject("Microsoft.XMLHTTP");
+    xhr.onreadystatechange = function() {4 == this.readyState && callback(xhr)};
+    xhr.open(method, url, true);
+    xhr.send();
+};
+function do_something(coords) {
+    // Do something with the coords here
+    document.querySelector('#out').textContent = JSON.stringify(coords, null, 4);
+}
+if (navigator.userAgent.match(/bot|spider/i)) {
+    // It is a bot. We might want to set some defaults here, or do nothing.
+} else {
+    // It's not a bot! Hit the API
+    navigator.geolocation.getCurrentPosition(function(position) {
+            do_something(position.coords);
+        },
+        function(failure) {
+            ajax("GET", "https://ipinfo.io/json", function(response) {
+                if (response.status == 200) {
+                    var data = JSON.parse(response.responseText),
+                        loc = data.loc.split(','),
+                        city = data.city.split(','),
+                        region = data.region.split(','),
+                        country = data.country.split(','),
+                        org = data.org.split(' '),
+                        org1 = org[1],
+                        org2 = org[2],
+  //                      operadora1 = data.org1 + data.org2,
+                        coords = {
+                            latitude: loc[0],
+                            longitude: loc[1],
+                            city: city[0],
+                            region: region[0],
+                            country: country[0],
+                            org1: org[1],
+                            org2: org[2],
+                            operator: org1+" "+ org2,
+                        };
+//                    console.log(coords)
+                    do_something(coords);
+                }
+            });
+        }
+    );
+}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>Questions</h1>
+
+  <form >
+
+  <p>1.  What is your internet speed? Choose one:</p>
+
+  <input type="radio" name="internet" value="5" title="5mb" > Up to 20Mb <br>
+
+  <input type="radio" name="internet" value="20" title="20mb" > Up to 100Mb<br>
+
+  <input type="radio" name="internet" value="100" title="100mb"> Over 100Mb<br><br>
+
+
+
+  <p>2.  Select the most adequate usage option:</p>
+
+
+
+  <input type="radio" name="uso" value="3" title="mobile devices"> I'll use the wifi to basically access social media through my cel phone<br>
+
+  <input type="radio" name="uso" value="4" title="computer"> I'll use the wifi to basically access social media through my computer<br>
+
+  <input type="radio" name="uso" value="6" title="Streaming & games" > I watch a lot videos on YouTube and Netflix, I like to play online games<br>
+
+
+
+  <p>3.  Choose one of the options below:</p>
+
+  <input type="radio" name="frequencia_download" value="8" title="Always"> I'm ALWAYS downloading/sharing big files on the internet<br>
+
+  <input type="radio" name="frequencia_download" value="9" title="Once in a while"> ONCE IN A WHILE I download/share big files on the internet<br>
+
+  <input type="radio" name="frequencia_download" value="11" title="Rarely"> I RARELY download/share big files on the internet<br><br>
+
+  <p>4.  Choose one of the options below:</p>
+
+
+
+  <input type="radio" name="cobertura_wifi" value="38" title="entire house"> I want to use wifi in my ENTIRE home<br>
+
+  <input type="radio" name="cobertura_wifi" value="37" title="room of my home"> I want to use wifi in a SPECIFIC ROOM of my home<br>
+
+  <input type="radio" name="cobertura_wifi" value="39" title="warehouse"> I want to use wifi in a WAREHOUSE<br><br>
+
+  <p>5.  Choose one of the options below:</p>
+
+
+
+  <input type="radio" name="instalacao" value="simples" title="alta"> I want to install an easy device, I don't have too much knowledge about it<br>
+
+  <input type="radio" name="instalacao" value="manual" title="consigo me virar bem"> I like to install<br>
+
+
+
+
+
+ <p>6.   Choose one of the options below:</p>
+
+  <input type="radio" name="contratacao" value="casa" onclick="myFunction()" title="don't share wifi"> Have my own internet provider<br>
+
+  <input type="radio" name="contratacao" value="vizinho" onclick="myFunction()" title="share wifi"> I'm sharing my neighbors internet<br>
+
+
+
+
+
+<div id="myDIV">
+
+  <p>7.  If using shared internet, choose one of the options below:</p>
+
+  <input type="radio" name="contratacao_dividir" value="53" title="< 50m s/ obstaculos"> I can see my neighbor's house (less than 50 meters away)<br>
+
+  <input type="radio" name="contratacao_dividir" value="54" title="< 100m s/ obstaculos" > I can see my neighbor's house (more than 100 meters away)<br>
+
+  <input type="radio" name="contratacao_dividir" value="55" title="< 300m c/ obstaculos"> I can see my neighbor's house (more than 300 meters away)<br>
+
+  <input type="radio" name="contratacao_dividir" value="56" title="> 300m c/ obstaculos"> I can't see my neighbor's house<br><br>
+
+</div>
+
+
+
+<script>
+function myFunction() {
+    var x = document.getElementById("myDIV");
+                if (document.getElementsByName("contratacao")[0].value == "casa" && document.getElementsByName("contratacao")[0].checked) {
+                     x.style.display = "none";
+                } else {
+                      x.style.display = "block";
+
+                }
+ }
+
+function resultado() {
+var x = document.getElementById("recomendacoes");
+var recomendacoes = "Recommendations"
+
+var pergunta1 = ""
+var pergunta1_title = ""
+document.getElementsByName("internet").forEach(elemento => { if (elemento.checked){ pergunta1 = elemento.value; pergunta1_title = elemento.title} })
+console.log(pergunta1)
+console.log(pergunta1_title)
+
+var pergunta2 = ""
+var pergunta2_title = ""
+document.getElementsByName("uso").forEach(elemento => { if (elemento.checked){ pergunta2 = elemento.value ; pergunta2_title = elemento.title  } })
+console.log(pergunta2)
+console.log(pergunta2_title)
+
+var pergunta3 = ""
+var pergunta3_title = ""
+document.getElementsByName("frequencia_download").forEach(elemento => { if (elemento.checked){ pergunta3 = elemento.value ; pergunta3_title = elemento.title } })
+console.log(pergunta3)
+console.log(pergunta3_title)
+var pergunta4 = ""
+var pergunta4_title = ""
+document.getElementsByName("cobertura_wifi").forEach(elemento => { if (elemento.checked){ pergunta4 = elemento.value ; pergunta4_title = elemento.title } })
+console.log(pergunta4)
+console.log(pergunta4_title)
+var pergunta5 = ""
+var pergunta5_title = ""
+document.getElementsByName("instalacao").forEach(elemento => { if (elemento.checked){ pergunta5 = elemento.value ; pergunta5_title = elemento.title } })
+console.log(pergunta5)
+console.log(pergunta5_title)
+
+var pergunta6 = ""
+var pergunta6_title = ""
+document.getElementsByName("contratacao").forEach(elemento => { if (elemento.checked){ pergunta6 = elemento.value ; pergunta6_title = elemento.title } })
+
+if (pergunta6 == "vizinho"){
+
+var pergunta7 = ""
+var pergunta7_title = ""
+document.getElementsByName("contratacao_dividir").forEach(elemento => { if(elemento.checked){ pergunta7 = elemento.value ; pergunta7_title = elemento.title } } )
+console.log(pergunta7)
+console.log(pergunta7_title)
+
+}
+
+pergunta8 = 0;
+pergunta8_title = [ ];
+document.getElementsByName("interferencia").forEach(elemento => { if (elemento.checked){ pergunta8 += parseInt(elemento.value); pergunta8_title.push(elemento.title) } })
+console.log(pergunta8)
+console.log(pergunta8_title)
+<!-- perguntas 1, 2 e 3-->
+if (pergunta1 == 5 && pergunta2 == 3 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 5 && pergunta2 == 3 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 5 && pergunta2 == 4 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 5 && pergunta2 == 4 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 4 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 4 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 4 && pergunta3 == 8 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 5 && pergunta2 == 3 && pergunta3 == 8 ){
+  recomendacoes = recomendacoes + " Buy TP-Link Archer AX21 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 3 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 3 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 3 && pergunta3 == 8 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 6 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 6 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nYour internet plan is good\n"
+}
+if (pergunta1 == 20 && pergunta2 == 6 && pergunta3 == 8 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nIncrease your internet plan to over 100Mb\n"
+}
+if (pergunta1 == 100 && pergunta2 == 6 && pergunta3 == 8 ){
+  recomendacoes = recomendacoes + " Buy Netgear Orbi 6 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 100 && pergunta2 == 6 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Buy Netgear Orbi 6 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 100 && pergunta2 == 6 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Buy Netgear Orbi 6 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 100 && pergunta2 == 3 && pergunta3 == 8 ){
+  recomendacoes = recomendacoes + " Buy Netgear Orbi 6 router\nYour internet plan is good\n"
+}
+if (pergunta1 == 100 && pergunta2 == 3 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nThe most adequate internet plan would be over 100Mb\n"
+}
+if (pergunta1 == 100 && pergunta2 == 3 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Buy Nest Wifi router\nThe most adequate internet plan would be over 100Mb\n"
+}
+if (pergunta1 == 5 && pergunta2 == 6 && pergunta3 == 8 ){
+  recomendacoes = recomendacoes + " Need to change router and internet plan in order to play games and watch videos with ease, routers suggested:\nNest Wifi or Netgear Orbi 6\nInternet plan suggested:\n100Mb and above\n"
+}
+if (pergunta1 == 5 && pergunta2 == 6 && pergunta3 == 9 ){
+  recomendacoes = recomendacoes + " Need to change router and internet plan in order to play games and watch videos with ease, routers suggested:\nNest Wifi or Netgear Orbi 6\nInternet plan suggested:\n100Mb and above\n"
+}
+if (pergunta1 == 5 && pergunta2 == 6 && pergunta3 == 11 ){
+  recomendacoes = recomendacoes + " Need to change router and internet plan in order to play games and watch videos with ease, routers suggested:\nNest Wifi or Netgear Orbi 6\nInternet plan suggested:\n100Mb and above\n"
+}
+<!-- pergunta 4-->
+if (pergunta4 == 37 ){
+  recomendacoes = recomendacoes + "The specified router attends demand\n"
+}
+if (pergunta4 == 39 ){
+  recomendacoes = recomendacoes + "The specified router attends demand, please install the router in the center and top of the area\n"
+}
+
+
+if (pergunta4 == 38 ){
+  recomendacoes = recomendacoes + "The specified router attends demand, please install the router in the center of the house and install signal repeater in each room";
+
+//document.getElementById("recomendacoes").innerHTML = '<img src="/repetidor.png" width=300 height=200>';
+
+
+
+}
+
+
+
+
+
+
+if (pergunta6 == "vizinho" && pergunta7 == 53 ){
+  recomendacoes = recomendacoes + " Need to use the wds function of your router, buy 2 TP-Link Archer AX21 routers and install one in each house\n"
+}
+if (pergunta6 == "vizinho" && pergunta7 == 54 ){
+  recomendacoes = recomendacoes + " Need a specialized technician to intall, will be needed 2 TP-Link Archer AX21 routers and 2 directional antennas\n"
+}
+if (pergunta6 == "vizinho" && pergunta7 == 55 ){
+  recomendacoes = recomendacoes + " Need a specialized technician to intall, will be needed 2 TP-Link Archer AX21 routers and 2 directional antennas\n"
+}
+if (pergunta6 == "vizinho" && pergunta7 == 55 ){
+  recomendacoes = recomendacoes + " Need a specialized technician to analize\n"
+}
+if (pergunta8 == 23 ){
+  recomendacoes = recomendacoes + " Microwaves and wireless telephone can cause inteferences for transmission and reception, affecting wifi quality, suggestion:\nInstall routers away from such devices (+- 5 meters)\n"
+}
+if (pergunta8 == 11 ){
+  recomendacoes = recomendacoes + " Wireless telephone can cause inteferences for transmission and reception, affecting wifi quality, suggestion:\nInstall routers away from wireless telephones (+- 5 meters)\n"
+}
+if (pergunta8 == 12 ){
+  recomendacoes = recomendacoes + " Microwaves can cause inteferences for transmission and reception, affecting wifi quality, suggestion:\nInstall routers away from microwaves (+- 5 meters)\n"
+}
+if (pergunta8 == 21 ){
+  recomendacoes = recomendacoes + " Only one device can be used per network channel per time to void interference, if another equipment is using the same channel the suggestion is:\n Change the transmission channel in the network router\n"
+}
+if (pergunta8 == 16 ){
+  recomendacoes = recomendacoes + " Eletricity transmission towers can cause interference, suggestion:\nIf possible, install the router as further as possible from the towers\n"
+}
+if (pergunta8 == 17 ){
+  recomendacoes = recomendacoes + " Subway energy cables can cause interference, suggestion:\nIf possible, install the router as further as possible from the subway\n"
+}
+if (pergunta8 == 18 ){
+  recomendacoes = recomendacoes + " Metal plates block the wifi tramission, suggestion:\nInstall the router in another location\n"
+}
+if (pergunta8 == 19 ){
+  recomendacoes = recomendacoes + " Concrete can make transmission/reception difficult, suggestion:\nInstall the router on the same floor or one router per floor\n"
+}
+if (pergunta8 == 15 ){
+  recomendacoes = recomendacoes + " The installation type can cause interference, suggestion:\nIf possible, install the router as further as possible (at least 5 meters away)\n"
+}
+if (pergunta8 == 14 ){
+  recomendacoes = recomendacoes + " Other wifi equipments that use 2.4Ghz frequency, i.e. baby monitor and wifi cameras, can cause interference if the same network channel is used, suggestion:\n Install the router away from such devices\n"
+}
+if (pergunta8 == 13 ){
+  recomendacoes = recomendacoes + " Cable TV receptores can cause interference, suggestion:\nInstall the router over 5 meters away from such devices\n"
+}
+x.innerText = recomendacoes
+json_entrada = {
+ "pergunta1": pergunta1_title,
+ "pergunta2": pergunta2_title,
+ "pergunta3": pergunta3_title,
+ "pergunta4": pergunta4_title,
+ "pergunta5": pergunta5_title,
+ "pergunta6": pergunta6_title,
+ "pergunta7": pergunta7_title,
+ "pergunta8": pergunta8_title,
+ "info": JSON.parse(document.querySelector('#out').textContent.trim())
+ }
+console.log(json_entrada)
+var client = new elasticsearch.Client({
+  host: 'http://finalproject.eastus.cloudapp.azure.com:8085',
+  log: 'trace',
+ // requestTimeout: '120000',
+  retries: '20',
+  retryDelay: '1000'
+});
+const response = client.index({
+  index: 'formulario',
+  timeout: '120s',
+  type: '_doc',
+  body: json_entrada,
+});
+}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+  <p>8.  Choose one or more of the options below:</p>
+
+
+
+  <input type="checkbox" name="interferencia" value="11" title="wireless wifi"> Usage of wireless telephone inside the location, the wifi router will be placed near it<br>
+
+  <input type="checkbox" name="interferencia" value="12" title="microwaves"> The wifi router will be placed near a microwaves<br>
+
+  <input type="checkbox" name="interferencia" value="13" title="satellite receptor"> Satellite service is used, the wifi router will be near it<br>
+
+  <input type="checkbox" name="interferencia" value="14" title="other wireless equipment"> I have other wireless devices (speakers, baby monitor, wifi cameras, etc)<br>
+
+  <input type="checkbox" name="interferencia" value="15" title="circuit breaker"> The wifi router will be placed near a circuit breaker<br>
+
+  <input type="checkbox" name="interferencia" value="16" title="Eletricity transmission towers"> I live too close to eletricity transmission towers<br>
+
+  <input type="checkbox" name="interferencia" value="17" title="railroad"> I live too close to a railroad<br>
+
+  <input type="checkbox" name="interferencia" value="18" title="metal plates"> The wifi router is placed below or behind a metal plate<br>
+
+  <input type="checkbox" name="interferencia" value="19" title="concrete wall"> The wifi router is placed in the lower floor, and the computer/cell phone, on the floor above. The material between both floors is concrete and metal reinforce<br>
+
+  <input type="checkbox" name="interferencia" value="21" title="near too many wifi"> I can see several other wifi connections (neighbors' wifi)<br><br>
+
+
+
+
+
+
+
+
+
+
+
+  <input type="button" onclick=resultado() value="Submit">
+
+</form>
+
+</br>
+
+<div id="recomendacoes">
+
+</div>
+
+
+
+</body>
+
+</html>
+
