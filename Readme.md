@@ -4,7 +4,7 @@ One html page send a POST json to logstash and the kibana plot a dashboard
 
 projeto:
 
-Uma Pagina HTML envia um arquivo json para o logstash e o kibana cria um dashboard com essas informacoes, tambem sao usadas informacoes sobre a localizacao aproximida do usuario atraves de featuares do proprio navegador e no final, e criado um mapa com a localizacao aproximada de cada usuario detalhando operadora, cidade, regiao, estado, pais, tipo de navegador web, sistema operacional, etc.
+Uma Pagina HTML envia um arquivo json para o logstash e o kibana cria um dashboard com essas informacoes, tambem sao usadas informacoes sobre a localizacao aproximida do usuario atraves da geolocation do proprio navegador e no final, e criado um mapa com a localizacao aproximada de cada usuario detalhando operadora, cidade, regiao, estado, pais, tipo de navegador web, sistema operacional, etc.
 
 apos instalado, links para acesso:
 
