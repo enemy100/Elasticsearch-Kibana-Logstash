@@ -5,13 +5,63 @@ One html page send a POST json to logstash and the kibana plot a dashboard
 projeto:
 
 Uma Pagina HTML envia um arquivo json para o logstash e o kibana cria um dashboard com essas informacoes, tambem sao usadas informacoes sobre a localizacao aproximida do usuario atraves de featuares do proprio navegador e no final, e criado um mapa com a localizacao aproximada de cada usuario detalhando operadora, cidade, regiao, estado, pais, tipo de navegador web, sistema operacional, etc.
+
+apos instalado, links para acesso:
+
+obs: alterar para o IP/dns desejado nos arquivos
+
+pagina html:
+
+http://finalproject.eastus.cloudapp.azure.com/
+
+Elasticsearch:
+
+http://finalproject.eastus.cloudapp.azure.com:8080
+
+
+
+##kibana dashboard
+
+![kibana Dashboard](../main/images/dasboard1.png)
+
+
+![kibana Dashboard](../main/images/dashboard2.png)
+
+
+![kibana Dashboard](../main/images/dashboard4.png)
+
+
+![kibana Dashboard](../main/images/dashboard5.png)
+
+
+
+pagina html
+
+![Formulario](../main/images/formulario.png)
+
+
+
 Steps to install elasticsearch, kibana,logstash and nginx:
 
 Se quiser, É possivel usar o terraform para fazer o deploy de uma vm ubuntu no azure com o arquivo main.tf
 
 referencias:
 
+https://www.codeproject.com/Articles/5260755/Create-an-Azure-Virtual-Machine-with-Terraform
 
+https://learn.hashicorp.com/tutorials/terraform/azure-build?in=terraform/azure-get-started
+
+atencao, necessario instalar o az cli antes:
+
+apt install azure-cli
+sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg
+
+az login
+
+
+No azure, abrir as seguintes portas:
+
+![Formulario](../main/images/ports_azure.png)
 
 
 
@@ -317,9 +367,25 @@ depois dar um restart no ngnix
 
 systemctl restart nginx
 
+
+#importar o dashboard para o kibana
+
+importar o arquivo export.ndjson
+
+![Formulario](../main/images/kibana_import.png)
+
+
+referencias:
+
+https://support.logz.io/hc/en-us/articles/210207225-How-can-I-export-import-Dashboards-Searches-and-Visualizations-from-my-own-Kibana-
+
+
 testando e vendo o input no kibana ( o comando abaixo sobe o servico, necessario para do systemd se quiser testar )
 
 /usr/share/logstash/bin/logstash -f /etc/logstash/conf.d/http.conf
+
+
+
 
 exemplo de entrada (apos clicar em submit na pagina html):
 
